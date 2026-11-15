@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Enlaces · Hacedores</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* IMAGEN DEL BANNER (opcional): img/banner-enlaces.jpg */
+:root { --banner-img: url("img/banner-enlaces.jpg"); }
+
+/* ==========================================================
+   1. BASE
+   ========================================================== */
+:root {
+  --bone: #F4F1EA; --paper: #FBFAF7; --navy: #0B1535; --blue: #2347D6;
+  --sand: #C8714A; --mut: #6b6f7e; --hair: rgba(11, 21, 53, .1);
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0; background: var(--bone); color: var(--navy);
+  font: 400 17px/1.55 "Inter Tight", system-ui, sans-serif; -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; }
+h1, h2, h3, p { margin: 0; }
+em, .serif { font-family: "Instrument Serif", Georgia, serif; font-style: italic; font-weight: 400; letter-spacing: -.01em; }
+.mono { font: 500 11px/1.4 "IBM Plex Mono", monospace; letter-spacing: .1em; text-transform: uppercase; }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+
+/* ==========================================================
+   2. BARRA (glass) Y BOTONES
+   ========================================================== */
+header {
+  position: fixed; z-index: 30; top: calc(env(safe-area-inset-top, 0px) + 18px);
+  left: 16px; right: 16px; max-width: 1100px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 8px 8px 8px 24px; border-radius: 999px; background: rgba(244, 241, 234, .62);
+  -webkit-backdrop-filter: blur(22px) saturate(1.6); backdrop-filter: blur(22px) saturate(1.6);
+  border: 1px solid rgba(255, 255, 255, .6); box-shadow: 0 8px 30px -12px rgba(11, 21, 53, .25);
+  transition: transform .5s cubic-bezier(.2, .7, .2, 1), opacity .3s;
+}
+header.hide { transform: translateY(calc(-100% - 40px)); opacity: 0; }
+.brand { font-weight: 600; font-size: 19px; letter-spacing: -.03em; text-decoration: none; }
+nav { display: flex; gap: 6px; }
+nav a { font-size: 14px; text-decoration: none; padding: 8px 14px; border-radius: 999px; transition: background .25s; }
+nav a:hover, nav a.on { background: rgba(11, 21, 53, .07); }
+.burger { display: none; border: 0; background: rgba(11, 21, 53, .07); color: var(--navy); padding: 10px 18px; border-radius: 999px; cursor: pointer; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 22px;
+  border: 0; border-radius: 999px; background: var(--navy); color: var(--bone);
+  font: 500 15px "Inter Tight", sans-serif; text-decoration: none; cursor: pointer; transition: transform .3s, box-shadow .3s;
+}
+.btn:hover { transform: translateY(-2px); box-shadow: 0 14px 28px -12px rgba(11, 21, 53, .5); }
+.btn.ghost { background: rgba(11, 21, 53, .06); color: var(--navy); }
+.btn.ghost:hover { box-shadow: none; background: rgba(11, 21, 53, .1); }
+.btn.sm { padding: 10px 20px; font-size: 14px; }
+.btn.light { background: var(--bone); color: var(--navy); }
+@media (max-width: 860px) {
+  .burger { display: block; } nav { display: none; } header > .btn { display: none; }
+  .open nav { display: flex; flex-direction: column; position: absolute; top: calc(100% + 8px); left: 0; right: 0; padding: 14px; border-radius: 28px; background: rgba(251, 250, 247, .96); box-shadow: 0 20px 50px -20px rgba(11, 21, 53, .4); }
+  .open nav a { font-size: 22px; padding: 12px 16px; }
+}
+
+/* ==========================================================
+   3. BANNER
+   ========================================================== */
+.banner {
+  position: relative; margin: 10px; min-height: clamp(300px, 44svh, 440px); border-radius: 36px; overflow: hidden; isolation: isolate; color: #fff;
+  display: flex; flex-direction: column; justify-content: flex-end; padding: 120px clamp(24px, 5vw, 64px) clamp(28px, 4vw, 48px);
+  background: linear-gradient(140deg, #2347D6, #0B1535);
+}
+.banner::before { content: ""; position: absolute; inset: 0; z-index: -3; background: var(--banner-img) center / cover; }
+.banner::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(to top, rgba(11, 21, 53, .75), rgba(11, 21, 53, .1) 70%); }
+.banner .orb { position: absolute; z-index: -2; width: 36vw; height: 36vw; right: -8vw; top: -12vw; border-radius: 50%; filter: blur(80px); background: rgba(200, 113, 74, .5); }
+.banner h1 { font-weight: 600; font-size: clamp(52px, 11vw, 150px); line-height: .9; letter-spacing: -.055em; }
+.banner h1 em { display: block; color: #f0b296; font-size: .5em; letter-spacing: -.02em; margin-top: 6px; }
+.banner p { max-width: 460px; margin-top: 16px; opacity: .88; }
+main > .wrap { padding-top: 36px; padding-bottom: 20px; }
+
+/* ==========================================================
+   4. ENLACES
+   ========================================================== */
+.links { display: grid; gap: 10px; }
+.lk { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: clamp(14px, 3vw, 28px); padding: clamp(20px, 3vw, 30px) clamp(22px, 3.5vw, 36px); border-radius: 36px; background: var(--paper); text-decoration: none; box-shadow: 0 1px 0 var(--hair), 0 30px 50px -42px rgba(11, 21, 53, .4); transition: transform .4s cubic-bezier(.2, .7, .2, 1), background .3s, color .3s; }
+.lk:hover { transform: translateY(-4px); background: var(--navy); color: var(--bone); }
+.lk .n { font: italic 400 44px/1 "Instrument Serif", serif; color: var(--sand); min-width: 56px; }
+.lk h2 { font-weight: 600; font-size: clamp(24px, 3.4vw, 38px); letter-spacing: -.035em; line-height: 1.05; }
+.lk p { color: var(--mut); font-size: 15px; margin-top: 4px; transition: color .3s; }
+.lk:hover p { color: rgba(244, 241, 234, .7); }
+.lk .go { width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; background: var(--navy); color: var(--bone); font-size: 20px; transition: transform .4s, background .3s; }
+.lk:hover .go { background: var(--bone); color: var(--navy); transform: rotate(-45deg); }
+.lk.soon { cursor: default; opacity: .62; }
+.lk.soon:hover { transform: none; background: var(--paper); color: var(--navy); }
+.lk.soon:hover p { color: var(--mut); }
+.lk.soon .go { background: transparent; border: 1px dashed rgba(11, 21, 53, .3); color: var(--mut); font: 500 10px "IBM Plex Mono", monospace; width: auto; height: auto; padding: 8px 12px; border-radius: 999px; }
+.lk.soon:hover .go { transform: none; background: transparent; color: var(--mut); }
+@media (max-width: 560px) { .lk { grid-template-columns: 1fr auto; } .lk .n { display: none; } }
+
+/* ==========================================================
+   PIE Y ANIMACIÓN
+   ========================================================== */
+footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14px; padding: 36px 20px 44px; color: var(--mut); font-size: 14px; }
+footer a { text-decoration: none; margin-left: 16px; }
+.js .rv { opacity: 0; transform: translateY(26px); filter: blur(8px); transition: opacity .8s, transform .8s cubic-bezier(.2, .7, .2, 1), filter .8s; }
+.js .rv.in { opacity: 1; transform: none; filter: none; }
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  .js .rv { opacity: 1; transform: none; filter: none; }
+}
+</style>
+</head>
+<body>
+
+<header id="hd">
+  <a class="brand" href="index.html">Hacedores</a>
+  <nav><a href="inscripcion.html">Inscripción</a><a href="llevar.html">Qué llevar</a><a href="contactos.html">Contactos</a><a href="enlaces.html" class="on">Enlaces</a><a href="fotos.html">Fotos</a><a href="merch.html">Merch</a></nav>
+  <a class="btn sm" href="inscripcion.html">Inscribirme</a>
+  <button class="burger mono" id="bg" aria-label="Menú">Menú</button>
+</header>
+
+<main>
+<div class="banner">
+  <div class="orb"></div>
+  <span class="mono" style="opacity:.85;margin-bottom:14px">Lámina 04</span>
+  <h1>Enlaces<em>todo en un solo lugar.</em></h1>
+  <p>Grupo, pagos, redes y más.</p>
+</div>
+
+<div class="wrap">
+  <div class="links" id="links"></div>
+</div>
+</main>
+
+<footer class="wrap">
+  <span>© Hacedores · del oír al vivir</span>
+  <span><a href="index.html">Inicio</a><a href="contactos.html">Contactos</a><a href="enlaces.html">Enlaces</a></span>
+</footer>
+
+<script>
+document.documentElement.classList.add("js");
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const hd=$("#hd");let ly=scrollY;
+$("#bg").onclick=()=>{hd.classList.toggle("open");hd.classList.remove("hide")};
+addEventListener("scroll",()=>{const y=scrollY;if(hd.classList.contains("open"))return;
+ if(y>ly+6&&y>80)hd.classList.add("hide");else if(y<ly-6||y<40)hd.classList.remove("hide");ly=y},{passive:true});
+const reveal=()=>{const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}}),{threshold:.1});
+ $$(".rv").forEach(e=>io.observe(e))};
+
+/* ===== Enlaces: edita aquí. url "" o "#" = se muestra como "Próximamente" ===== */
+const ENL=[
+ {t:"Grupo de WhatsApp",d:"Únete para recibir los avisos del campamento.",url:"#"}, 
+ {t:"Flyer y material",d:"Descarga el flyer y las listas para compartir.",url:"#"},
+ {t:"Álbum de fotos",d:"Las fotos del campamento anterior y del actual.",url:"fotos.html"},
+ {t:"Inscripción",d:"Reserva tu lugar en cuatro pasos.",url:"inscripcion.html"}
+];
+$("#links").innerHTML=ENL.map((l,i)=>{
+ const ok=l.url&&l.url!=="#",ext=ok&&/^https?:/.test(l.url);
+ return`<${ok?"a":"div"} class="lk rv${ok?"":" soon"}"${ok?` href="${l.url}"${ext?' target="_blank" rel="noopener"':""}`:""}>
+  <span class="n">0${i+1}</span><div><h2>${l.t}</h2><p>${l.d}</p></div>
+  <span class="go">${ok?"↗":"Próximamente"}</span></${ok?"a":"div"}>`}).join("");
+reveal();
+</script>
+</body>
+</html>

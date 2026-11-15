@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fotos · Hacedores</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* IMAGEN DEL BANNER (opcional): img/banner-fotos.jpg */
+:root { --banner-img: url("img/banner-fotos.jpg"); }
+
+/* ==========================================================
+   1. BASE
+   ========================================================== */
+:root {
+  --bone: #F4F1EA; --paper: #FBFAF7; --navy: #0B1535; --blue: #2347D6;
+  --sand: #C8714A; --mut: #6b6f7e; --hair: rgba(11, 21, 53, .1);
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0; background: var(--bone); color: var(--navy);
+  font: 400 17px/1.55 "Inter Tight", system-ui, sans-serif; -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; }
+h1, h2, h3, p { margin: 0; }
+em, .serif { font-family: "Instrument Serif", Georgia, serif; font-style: italic; font-weight: 400; letter-spacing: -.01em; }
+.mono { font: 500 11px/1.4 "IBM Plex Mono", monospace; letter-spacing: .1em; text-transform: uppercase; }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+
+/* ==========================================================
+   2. BARRA (glass) Y BOTONES
+   ========================================================== */
+header {
+  position: fixed; z-index: 30; top: calc(env(safe-area-inset-top, 0px) + 18px);
+  left: 16px; right: 16px; max-width: 1100px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 8px 8px 8px 24px; border-radius: 999px; background: rgba(244, 241, 234, .62);
+  -webkit-backdrop-filter: blur(22px) saturate(1.6); backdrop-filter: blur(22px) saturate(1.6);
+  border: 1px solid rgba(255, 255, 255, .6); box-shadow: 0 8px 30px -12px rgba(11, 21, 53, .25);
+  transition: transform .5s cubic-bezier(.2, .7, .2, 1), opacity .3s;
+}
+header.hide { transform: translateY(calc(-100% - 40px)); opacity: 0; }
+.brand { font-weight: 600; font-size: 19px; letter-spacing: -.03em; text-decoration: none; }
+nav { display: flex; gap: 6px; }
+nav a { font-size: 14px; text-decoration: none; padding: 8px 14px; border-radius: 999px; transition: background .25s; }
+nav a:hover, nav a.on { background: rgba(11, 21, 53, .07); }
+.burger { display: none; border: 0; background: rgba(11, 21, 53, .07); color: var(--navy); padding: 10px 18px; border-radius: 999px; cursor: pointer; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 22px;
+  border: 0; border-radius: 999px; background: var(--navy); color: var(--bone);
+  font: 500 15px "Inter Tight", sans-serif; text-decoration: none; cursor: pointer; transition: transform .3s, box-shadow .3s;
+}
+.btn:hover { transform: translateY(-2px); box-shadow: 0 14px 28px -12px rgba(11, 21, 53, .5); }
+.btn.ghost { background: rgba(11, 21, 53, .06); color: var(--navy); }
+.btn.ghost:hover { box-shadow: none; background: rgba(11, 21, 53, .1); }
+.btn.sm { padding: 10px 20px; font-size: 14px; }
+.btn.light { background: var(--bone); color: var(--navy); }
+@media (max-width: 860px) {
+  .burger { display: block; } nav { display: none; } header > .btn { display: none; }
+  .open nav { display: flex; flex-direction: column; position: absolute; top: calc(100% + 8px); left: 0; right: 0; padding: 14px; border-radius: 28px; background: rgba(251, 250, 247, .96); box-shadow: 0 20px 50px -20px rgba(11, 21, 53, .4); }
+  .open nav a { font-size: 22px; padding: 12px 16px; }
+}
+
+/* ==========================================================
+   3. BANNER
+   ========================================================== */
+.banner {
+  position: relative; margin: 10px; min-height: clamp(300px, 44svh, 440px); border-radius: 36px; overflow: hidden; isolation: isolate; color: #fff;
+  display: flex; flex-direction: column; justify-content: flex-end; padding: 120px clamp(24px, 5vw, 64px) clamp(28px, 4vw, 48px);
+  background: linear-gradient(140deg, #2347D6, #0B1535);
+}
+.banner::before { content: ""; position: absolute; inset: 0; z-index: -3; background: var(--banner-img) center / cover; }
+.banner::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(to top, rgba(11, 21, 53, .75), rgba(11, 21, 53, .1) 70%); }
+.banner .orb { position: absolute; z-index: -2; width: 36vw; height: 36vw; right: -8vw; top: -12vw; border-radius: 50%; filter: blur(80px); background: rgba(200, 113, 74, .5); }
+.banner h1 { font-weight: 600; font-size: clamp(52px, 11vw, 150px); line-height: .9; letter-spacing: -.055em; }
+.banner h1 em { display: block; color: #f0b296; font-size: .5em; letter-spacing: -.02em; margin-top: 6px; }
+.banner p { max-width: 460px; margin-top: 16px; opacity: .88; }
+main > .wrap { padding-top: 36px; padding-bottom: 20px; }
+
+/* ==========================================================
+   4. ENCABEZADOS DE SECCIÓN
+   ========================================================== */
+.sh { margin: 56px 0 24px; }
+.sh .mono { display: block; color: var(--sand); margin-bottom: 12px; }
+.sh h2 { font-weight: 600; font-size: clamp(34px, 6vw, 64px); line-height: 1; letter-spacing: -.04em; }
+.sh h2 em { color: var(--sand); }
+main > .wrap > .sh:first-child { margin-top: 0; }
+
+/* ==========================================================
+   5. ÁLBUMES (enlaces a las fotos)
+   ========================================================== */
+.albums { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; }
+.alb {
+  position: relative; display: flex; flex-direction: column; justify-content: flex-end; isolation: isolate; overflow: hidden; color: #fff; text-decoration: none;
+  min-height: clamp(320px, 38vw, 460px); padding: 26px; border-radius: 40px; background: linear-gradient(150deg, var(--c1, #2347D6), var(--c2, #0B1535));
+}
+.alb::before { content: ""; position: absolute; inset: 0; z-index: -2; background: var(--img) center / cover; transition: transform 1s cubic-bezier(.2, .7, .2, 1); }
+.alb::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(to top, rgba(11, 21, 53, .78), rgba(11, 21, 53, 0) 60%); }
+.alb:hover::before { transform: scale(1.05); }
+.alb .tag { position: absolute; top: 22px; left: 24px; padding: 7px 14px; border-radius: 999px; background: rgba(255, 255, 255, .2); border: 1px solid rgba(255, 255, 255, .3); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); }
+.alb .go { position: absolute; top: 18px; right: 18px; min-width: 44px; height: 44px; padding: 0 14px; border-radius: 999px; display: grid; place-items: center; background: rgba(255, 255, 255, .92); color: var(--navy); font-size: 20px; transition: transform .4s; }
+.alb:hover .go { transform: rotate(-45deg); }
+.alb.soon { cursor: default; }
+.alb.soon:hover .go { transform: none; }
+.alb.soon .go { font: 500 10px "IBM Plex Mono", monospace; letter-spacing: .08em; text-transform: uppercase; }
+.alb h3 { font-weight: 600; font-size: clamp(30px, 4vw, 48px); letter-spacing: -.04em; line-height: 1; }
+.alb p { margin-top: 8px; opacity: .88; max-width: 340px; }
+
+/* ==========================================================
+   6. GALERÍA (muro de fotos con visor)
+   ========================================================== */
+.gal { columns: 3 260px; column-gap: 12px; }
+.ph {
+  position: relative; display: block; width: 100%; padding: 0; border: 0; margin: 0 0 12px; overflow: hidden; break-inside: avoid; cursor: zoom-in;
+  aspect-ratio: var(--ar, 4 / 5); border-radius: 28px; background: linear-gradient(150deg, var(--c1, #3a5bd9), var(--c2, #0B1535));
+}
+.ph:nth-child(3n+2) { --c1: #C8714A; --c2: #6e3320; }
+.ph:nth-child(3n) { --c1: #d9cdb6; --c2: #a08c64; }
+.ph img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .8s cubic-bezier(.2, .7, .2, 1); }
+.ph:hover img { transform: scale(1.06); }
+.ph:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+
+/* ==========================================================
+   7. VISOR (pantalla completa)
+   ========================================================== */
+.lb { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; background: rgba(8, 12, 36, .92); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); }
+.lb img { max-width: min(92vw, 1200px); max-height: 82svh; border-radius: 24px; box-shadow: 0 40px 80px -30px rgba(0, 0, 0, .6); }
+.lb .msg { color: #fff; opacity: .7; }
+.lbb { position: absolute; width: 52px; height: 52px; border: 1px solid rgba(255, 255, 255, .3); border-radius: 50%; background: rgba(255, 255, 255, .14); color: #fff; font-size: 22px; cursor: pointer; display: grid; place-items: center; -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); transition: background .25s; }
+.lbb:hover { background: rgba(255, 255, 255, .28); }
+.lbb.x { top: calc(env(safe-area-inset-top, 0px) + 18px); right: 18px; }
+.lbb.p { left: 18px; top: 50%; }
+.lbb.n { right: 18px; top: 50%; }
+.lb .cnt { position: absolute; bottom: calc(env(safe-area-inset-bottom, 0px) + 22px); left: 0; right: 0; text-align: center; color: #fff; opacity: .75; }
+@media (max-width: 640px) { .lbb.p, .lbb.n { top: auto; bottom: 14px; } .lb .cnt { display: none; } }
+
+/* ==========================================================
+   8. COMPARTIR FOTOS
+   ========================================================== */
+.share { position: relative; overflow: hidden; isolation: isolate; margin-top: 64px; padding: clamp(36px, 7vw, 84px); border-radius: 44px; background: var(--navy); color: var(--bone); text-align: center; }
+.share .orb { position: absolute; z-index: -1; border-radius: 50%; filter: blur(90px); }
+.share .a { width: 34vw; height: 34vw; left: -8vw; top: -14vw; background: rgba(35, 71, 214, .6); }
+.share .b { width: 26vw; height: 26vw; right: -6vw; bottom: -12vw; background: rgba(200, 113, 74, .45); }
+.share h2 { font-weight: 600; font-size: clamp(34px, 6vw, 72px); letter-spacing: -.045em; line-height: .95; }
+.share h2 em { color: #f0b296; }
+.share p { max-width: 440px; margin: 16px auto 26px; opacity: .8; }
+.share .btn[aria-disabled="true"] { opacity: .6; pointer-events: none; }
+
+/* ==========================================================
+   PIE Y ANIMACIÓN
+   ========================================================== */
+footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14px; padding: 36px 20px 44px; color: var(--mut); font-size: 14px; }
+footer a { text-decoration: none; margin-left: 16px; }
+.js .rv { opacity: 0; transform: translateY(26px); filter: blur(8px); transition: opacity .8s, transform .8s cubic-bezier(.2, .7, .2, 1), filter .8s; }
+.js .rv.in { opacity: 1; transform: none; filter: none; }
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  .js .rv { opacity: 1; transform: none; filter: none; }
+}
+</style>
+</head>
+<body>
+
+<header id="hd">
+  <a class="brand" href="index.html">Hacedores</a>
+  <nav><a href="inscripcion.html">Inscripción</a><a href="llevar.html">Qué llevar</a><a href="contactos.html">Contactos</a><a href="enlaces.html">Enlaces</a><a href="fotos.html" class="on">Fotos</a><a href="merch.html">Merch</a></nav>
+  <a class="btn sm" href="inscripcion.html">Inscribirme</a>
+  <button class="burger mono" id="bg" aria-label="Menú">Menú</button>
+</header>
+
+<main>
+<div class="banner">
+  <div class="orb"></div>
+  <span class="mono" style="opacity:.85;margin-bottom:14px">Lámina 05</span>
+  <h1>Fotos<em>lo que vivimos.</em></h1>
+  <p>Los álbumes del campamento, para revivirlos y compartirlos.</p>
+</div>
+
+<div class="wrap">
+  <div class="sh rv"><span class="mono">Álbumes</span><h2>Elige <em>un álbum.</em></h2></div>
+  <div class="albums" id="albums"></div>
+
+  <div class="sh rv"><span class="mono">Destacadas</span><h2>Un vistazo <em>rápido.</em></h2></div>
+  <div class="gal" id="gal"></div>
+
+  <div class="share rv">
+    <div class="orb a"></div><div class="orb b"></div>
+    <h2>¿Tienes fotos <em>del camp?</em></h2>
+    <p>Compártelas con el grupo para que entren al álbum. Entre todos armamos el recuerdo.</p>
+    <a class="btn light" id="subir" href="#">Compartir mis fotos</a>
+  </div>
+</div>
+
+<div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="Visor de fotos">
+  <button class="lbb x" id="lbx" aria-label="Cerrar">×</button>
+  <button class="lbb p" id="lbp" aria-label="Anterior">‹</button>
+  <button class="lbb n" id="lbn" aria-label="Siguiente">›</button>
+  <img id="lbi" alt="">
+  <div class="msg mono" id="lbm" hidden>Foto aún no disponible</div>
+  <div class="cnt mono" id="lbc"></div>
+</div>
+</main>
+
+<footer class="wrap">
+  <span>© Hacedores · del oír al vivir</span>
+  <span><a href="index.html">Inicio</a><a href="contactos.html">Contactos</a><a href="enlaces.html">Enlaces</a></span>
+</footer>
+
+<script>
+document.documentElement.classList.add("js");
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const hd=$("#hd");let ly=scrollY;
+$("#bg").onclick=()=>{hd.classList.toggle("open");hd.classList.remove("hide")};
+addEventListener("scroll",()=>{const y=scrollY;if(hd.classList.contains("open"))return;
+ if(y>ly+6&&y>80)hd.classList.add("hide");else if(y<ly-6||y<40)hd.classList.remove("hide");ly=y},{passive:true});
+const reveal=()=>{const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}}),{threshold:.1});
+ $$(".rv").forEach(e=>io.observe(e))};
+
+/* ===== Álbumes: edita aquí. url "" o "#" = "Próximamente" ===== */
+const ALB=[
+ {t:"Campamento anterior",d:"Los mejores momentos del año pasado.",tag:"Álbum 01",cover:"img/fotos/album-1.jpg",url:"#"},
+ {t:"Este campamento",d:"Se irá llenando durante el campamento.",tag:"Álbum 02",cover:"img/fotos/album-2.jpg",url:"#",c1:"#C8714A",c2:"#6e3320"}
+];
+/* ===== Compartir fotos (enlace de Drive, formulario, WhatsApp...) ===== */
+const SUBIR="#";
+/* ===== Galería: src = archivo en img/fotos/ · ar = forma (ancho/alto) ===== */
+const GAL=[
+ {src:"img/fotos/foto-1.jpg",ar:"4/5"},{src:"img/fotos/foto-2.jpg",ar:"1/1"},{src:"img/fotos/foto-3.jpg",ar:"4/3"},
+ {src:"img/fotos/foto-4.jpg",ar:"3/4"},{src:"img/fotos/foto-5.jpg",ar:"1/1"},{src:"img/fotos/foto-6.jpg",ar:"4/5"},
+ {src:"img/fotos/foto-7.jpg",ar:"16/10"},{src:"img/fotos/foto-8.jpg",ar:"3/4"},{src:"img/fotos/foto-9.jpg",ar:"4/5"}
+];
+
+/* álbumes */
+$("#albums").innerHTML=ALB.map(a=>{
+ const ok=a.url&&a.url!=="#",ext=ok&&/^https?:/.test(a.url),T=ok?"a":"div";
+ return`<${T} class="alb rv${ok?"":" soon"}" style="--img:url('${a.cover}')${a.c1?`;--c1:${a.c1};--c2:${a.c2}`:""}"${ok?` href="${a.url}"${ext?' target="_blank" rel="noopener"':""}`:""}>
+  <span class="tag mono">${a.tag}</span><span class="go">${ok?"↗":"Próximamente"}</span>
+  <h3>${a.t}</h3><p>${a.d}</p></${T}>`}).join("");
+
+/* compartir */
+if(SUBIR&&SUBIR!=="#"){$("#subir").href=SUBIR;$("#subir").target="_blank";$("#subir").rel="noopener"}
+else{$("#subir").setAttribute("aria-disabled","true");$("#subir").textContent="Próximamente"}
+
+/* galería */
+$("#gal").innerHTML=GAL.map((g,i)=>`<button class="ph rv" data-i="${i}" style="--ar:${g.ar||"4/5"}" aria-label="Abrir foto ${i+1}"><img src="${g.src}" alt="" loading="lazy" onerror="this.remove()"></button>`).join("");
+
+/* visor */
+const lb=$("#lb"),li=$("#lbi");let gi=0;
+li.onload=()=>{li.hidden=false;$("#lbm").hidden=true};
+li.onerror=()=>{li.hidden=true;$("#lbm").hidden=false};
+const show=i=>{gi=(i+GAL.length)%GAL.length;li.src=GAL[gi].src;$("#lbc").textContent=`${gi+1} / ${GAL.length}`};
+const open_=i=>{show(i);lb.hidden=false;document.body.style.overflow="hidden";$("#lbx").focus()};
+const close_=()=>{lb.hidden=true;document.body.style.overflow=""};
+$("#gal").addEventListener("click",e=>{const b=e.target.closest(".ph");if(b)open_(+b.dataset.i)});
+$("#lbx").onclick=close_;$("#lbp").onclick=()=>show(gi-1);$("#lbn").onclick=()=>show(gi+1);
+lb.addEventListener("click",e=>{if(e.target===lb)close_()});
+addEventListener("keydown",e=>{if(lb.hidden)return;if(e.key==="Escape")close_();if(e.key==="ArrowRight")show(gi+1);if(e.key==="ArrowLeft")show(gi-1)});
+let sx=null;lb.addEventListener("touchstart",e=>{sx=e.touches[0].clientX},{passive:true});
+lb.addEventListener("touchend",e=>{if(sx===null)return;const dx=e.changedTouches[0].clientX-sx;sx=null;if(Math.abs(dx)>50)show(gi+(dx<0?1:-1))});
+
+reveal();
+</script>
+<script src="js/proximamente.js"></script>
+</body>
+</html>

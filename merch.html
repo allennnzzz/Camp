@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Merch · Hacedores</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* ==========================================================
+   0. IMÁGENES (carpeta img/, junto a este archivo)
+   merch-hero.jpg ........ fondo completo del hero (suéter o modelo)
+   merch-sueter.png ...... suéter SIN fondo (PNG transparente)
+   merch-stickers.jpg .... fondo completo de la sección stickers
+   merch-gorra.png ....... gorra SIN fondo (PNG transparente)
+   ========================================================== */
+
+/* ==========================================================
+   1. BASE
+   ========================================================== */
+:root {
+  --bone: #F4F1EA; --paper: #FBFAF7; --navy: #0B1535; --blue: #2347D6;
+  --sand: #C8714A; --mut: #6b6f7e; --hair: rgba(11, 21, 53, .12);
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0; background: var(--bone); color: var(--navy); overflow-x: hidden;
+  font: 400 17px/1.55 "Inter Tight", system-ui, sans-serif; -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; }
+h1, h2, h3, p { margin: 0; }
+em, .serif { font-family: "Instrument Serif", Georgia, serif; font-style: italic; font-weight: 400; letter-spacing: -.01em; }
+.mono { font: 500 11px/1.4 "IBM Plex Mono", monospace; letter-spacing: .1em; text-transform: uppercase; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
+.big { font-weight: 600; letter-spacing: -.06em; line-height: .86; }
+
+/* ==========================================================
+   2. BARRA (glass) Y BOTONES
+   ========================================================== */
+header {
+  position: fixed; z-index: 30; top: calc(env(safe-area-inset-top, 0px) + 18px);
+  left: 16px; right: 16px; max-width: 1100px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 8px 8px 8px 24px; border-radius: 999px; background: rgba(244, 241, 234, .62);
+  -webkit-backdrop-filter: blur(22px) saturate(1.6); backdrop-filter: blur(22px) saturate(1.6);
+  border: 1px solid rgba(255, 255, 255, .6); box-shadow: 0 8px 30px -12px rgba(11, 21, 53, .25);
+  transition: transform .5s cubic-bezier(.2, .7, .2, 1), opacity .3s;
+}
+header.hide { transform: translateY(calc(-100% - 40px)); opacity: 0; }
+.brand { font-weight: 600; font-size: 19px; letter-spacing: -.03em; text-decoration: none; }
+nav { display: flex; gap: 6px; }
+nav a { font-size: 14px; text-decoration: none; padding: 8px 14px; border-radius: 999px; transition: background .25s; }
+nav a:hover, nav a.on { background: rgba(11, 21, 53, .07); }
+.burger { display: none; border: 0; background: rgba(11, 21, 53, .07); color: var(--navy); padding: 10px 18px; border-radius: 999px; cursor: pointer; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 28px;
+  border: 0; border-radius: 999px; background: var(--navy); color: var(--bone);
+  font: 500 15px "Inter Tight", sans-serif; text-decoration: none; cursor: pointer; transition: transform .3s, box-shadow .3s;
+}
+.btn:hover { transform: translateY(-2px); box-shadow: 0 14px 28px -12px rgba(11, 21, 53, .5); }
+.btn.sm { padding: 10px 20px; font-size: 14px; }
+.btn.light { background: var(--bone); color: var(--navy); }
+.btn.glass { background: rgba(255, 255, 255, .18); color: #fff; border: 1px solid rgba(255, 255, 255, .35); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); }
+@media (max-width: 860px) {
+  .burger { display: block; } nav { display: none; } header > .btn { display: none; }
+  .open nav { display: flex; flex-direction: column; position: absolute; top: calc(100% + 8px); left: 0; right: 0; padding: 14px; border-radius: 28px; background: rgba(251, 250, 247, .96); box-shadow: 0 20px 50px -20px rgba(11, 21, 53, .4); }
+  .open nav a { font-size: 22px; padding: 12px 16px; }
+}
+
+/* ==========================================================
+   3. ETIQUETAS TIPO STICKER (el toque más atrevido de esta página)
+   ========================================================== */
+.tag {
+  display: inline-block; padding: 8px 16px; border-radius: 999px; background: #fff; color: var(--navy);
+  border: 2px solid var(--navy); box-shadow: 4px 4px 0 var(--navy); transform: rotate(-3deg);
+  font: 500 12px "IBM Plex Mono", monospace; letter-spacing: .1em; text-transform: uppercase;
+}
+.tag.sand { background: var(--sand); color: #fff; }
+.tag.blue { background: var(--blue); color: #fff; }
+.tag.r { transform: rotate(3deg); }
+
+/* ==========================================================
+   4. HERO (imagen de fondo completa)
+   ========================================================== */
+.hero {
+  position: relative; margin: 10px; min-height: calc(100svh - 20px); border-radius: 36px; overflow: hidden; isolation: isolate;
+  color: #fff; display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 130px clamp(24px, 5vw, 64px) clamp(28px, 4vw, 48px);
+  background: linear-gradient(140deg, #3a5bd9, #0B1535 70%);
+}
+.hero::before { content: ""; position: absolute; inset: 0; z-index: -2; background: url("img/merch-hero.jpg") center / cover; }
+.hero::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(to top, rgba(11, 21, 53, .78), rgba(11, 21, 53, .05) 65%); }
+.hero h1 { font-size: clamp(88px, 24vw, 340px); text-shadow: 0 10px 60px rgba(0, 0, 0, .3); }
+.hero .sub { font-size: clamp(26px, 4.4vw, 56px); color: #f0b296; line-height: 1.05; margin: 8px 0 26px; }
+.jump { display: flex; flex-wrap: wrap; gap: 8px; }
+.spin { position: absolute; top: 120px; right: clamp(20px, 5vw, 64px); width: clamp(96px, 13vw, 150px); animation: rot 18s linear infinite; }
+.spin text { fill: #fff; font: 500 10.5px "IBM Plex Mono", monospace; text-transform: uppercase; }
+@keyframes rot { to { transform: rotate(360deg); } }
+
+/* ==========================================================
+   5. EDITORIAL (texto grande + líneas topográficas)
+   ========================================================== */
+.edit { position: relative; overflow: hidden; padding: 130px 0 150px; }
+.edit svg.topo { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
+.edit svg.topo path { fill: none; stroke: var(--blue); stroke-width: 1; opacity: .3; }
+.edit .wrap { position: relative; z-index: 1; }
+.edit h2 { font-weight: 600; font-size: clamp(48px, 9.5vw, 140px); line-height: .9; letter-spacing: -.055em; max-width: 1000px; }
+.edit h2 em { color: var(--sand); }
+.cols { display: grid; grid-template-columns: 1.3fr 1fr; gap: clamp(24px, 6vw, 80px); margin-top: 64px; align-items: start; }
+.lede { font-size: clamp(22px, 2.9vw, 36px); line-height: 1.25; letter-spacing: -.02em; }
+.lede + .lede { margin-top: 24px; color: var(--mut); }
+.side { display: grid; gap: 14px; }
+.fact { padding: 22px 24px; border-radius: 28px; background: rgba(255, 255, 255, .62); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); border: 1px solid #fff; }
+.fact b { display: block; font: italic 400 56px/1 "Instrument Serif", serif; color: var(--blue); }
+.fact span { color: var(--mut); font-size: 15px; }
+.cota { position: absolute; z-index: 1; font: 500 11px "IBM Plex Mono", monospace; color: var(--blue); }
+.vert { position: absolute; right: 18px; top: 130px; writing-mode: vertical-rl; color: var(--mut); z-index: 1; }
+
+/* cinta inclinada entre secciones */
+.tape { position: relative; z-index: 3; margin: -34px -30px; padding: 16px 0; transform: rotate(-2deg); background: var(--sand); color: #fff; overflow: hidden; white-space: nowrap; }
+.tape div { display: inline-flex; gap: 32px; padding-right: 32px; animation: mq 30s linear infinite; }
+.tape span { font-weight: 600; font-size: clamp(22px, 3vw, 38px); letter-spacing: -.03em; }
+.tape span:nth-child(even) { font-family: "Instrument Serif", serif; font-style: italic; font-weight: 400; }
+@keyframes mq { to { transform: translateX(-100%); } }
+
+/* ==========================================================
+   6. EL SUÉTER (PNG sin fondo en una esquina + formulario)
+   ========================================================== */
+.sw { position: relative; background: var(--blue); color: #fff; padding: 150px 0 120px; overflow: hidden; isolation: isolate; }
+.sw .ghost { position: absolute; left: -2vw; bottom: -4vw; z-index: -1; font-weight: 600; font-size: clamp(120px, 26vw, 380px); letter-spacing: -.07em; line-height: .8; color: transparent; -webkit-text-stroke: 1.5px rgba(255, 255, 255, .22); white-space: nowrap; }
+.sw h2 { font-weight: 600; font-size: clamp(52px, 10vw, 150px); line-height: .88; letter-spacing: -.06em; }
+.sw h2 em { color: #f0b296; }
+.sw .in { max-width: 560px; }
+.sw p.t { margin: 24px 0; font-size: 19px; opacity: .88; max-width: 460px; }
+.specs { list-style: none; margin: 0 0 30px; padding: 0; max-width: 460px; }
+.specs li { display: flex; justify-content: space-between; gap: 16px; padding: 13px 0; border-top: 1px solid rgba(255, 255, 255, .25); }
+.specs li span:first-child { opacity: .7; }
+/* --- Formulario de pedido (vidrio sobre el azul) --- */
+.order {
+  max-width: 540px;
+  padding: 28px;
+  border-radius: 34px;
+  background: rgba(255, 255, 255, .14);
+  border: 1px solid rgba(255, 255, 255, .35);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+}
+.order h3 { font-weight: 600; font-size: 30px; letter-spacing: -.03em; margin-bottom: 6px; }
+.order .intro { font-size: 15px; opacity: .82; margin-bottom: 22px; }
+.og { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.of { display: block; margin-bottom: 14px; }
+.of > .mono { display: block; margin: 0 0 7px 6px; opacity: .8; }
+.order input:not([type=radio]):not([type=file]) {
+  width: 100%;
+  padding: 14px 20px;
+  border: 1px solid rgba(255, 255, 255, .35);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, .12);
+  color: #fff;
+  font: inherit;
+  transition: background .25s;
+}
+.order input::placeholder { color: rgba(255, 255, 255, .55); }
+.order input:focus { outline: 2px solid #fff; outline-offset: 1px; background: rgba(255, 255, 255, .2); }
+
+/* tallas */
+.sz { display: flex; flex-wrap: wrap; gap: 8px; }
+.sz input { position: absolute; opacity: 0; width: 0; }
+.sz span {
+  display: block;
+  padding: 11px 20px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, .4);
+  cursor: pointer;
+  transition: .25s;
+}
+.sz input:checked + span { background: #fff; color: var(--blue); border-color: #fff; }
+.sz input:focus-visible + span { outline: 2px solid #fff; outline-offset: 2px; }
+
+/* cantidad */
+.qty { display: inline-flex; align-items: center; padding: 4px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .4); }
+.qty button { width: 38px; height: 38px; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .18); color: #fff; font-size: 20px; cursor: pointer; }
+.qty output { min-width: 44px; text-align: center; font-weight: 500; }
+
+/* comprobante */
+.dz {
+  display: block;
+  padding: 16px 20px;
+  border: 1.5px dashed rgba(255, 255, 255, .5);
+  border-radius: 22px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 15px;
+  transition: background .25s;
+}
+.dz:hover { background: rgba(255, 255, 255, .1); }
+.dz input { display: none; }
+
+.order .btn { width: 100%; margin-top: 8px; }
+.done { text-align: center; padding: 40px 28px; }
+.done .n { font-weight: 600; font-size: clamp(54px, 10vw, 90px); letter-spacing: -.05em; line-height: 1; margin: 12px 0; color: #f0b296; }
+@media (max-width: 560px) { .og { grid-template-columns: 1fr; } }
+
+/* recortes sin marco (suéter y gorra) */
+.cut { position: absolute; z-index: 2; pointer-events: none; }
+.cut img { display: block; width: 100%; filter: drop-shadow(0 40px 40px rgba(0, 0, 0, .35)); animation: float 7s ease-in-out infinite; }
+.cut .hold { display: none; place-items: center; text-align: center; padding: 20px; aspect-ratio: 1; border: 2px dashed rgba(255, 255, 255, .55); border-radius: 36px; background: rgba(255, 255, 255, .08); }
+.cut.empty img { display: none; }
+.cut.empty .hold { display: grid; }
+.cut.sweater { right: max(-3vw, -40px); top: 40px; width: min(52vw, 640px); transform: rotate(7deg); }
+.cut.cap { left: max(2vw, 0px); top: 60px; width: min(40vw, 460px); transform: rotate(-8deg); }
+@keyframes float { 50% { transform: translateY(-16px) rotate(1.5deg); } }
+
+/* ==========================================================
+   7. STICKERS (imagen de fondo completa)
+   ========================================================== */
+.stk {
+  position: relative; min-height: 100svh; display: flex; flex-direction: column; justify-content: flex-end; isolation: isolate; color: #fff;
+  padding: 120px clamp(24px, 5vw, 64px) clamp(32px, 5vw, 64px); background: linear-gradient(150deg, #5f8f6b, #1f3d2b);
+}
+.stk::before { content: ""; position: absolute; inset: 0; z-index: -2; background: url("img/merch-stickers.jpg") center / cover; }
+.stk::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(to top, rgba(0, 0, 0, .55), rgba(0, 0, 0, 0) 55%); }
+.stk h2 { font-weight: 600; font-size: clamp(70px, 18vw, 260px); letter-spacing: -.06em; line-height: .84; text-shadow: 0 8px 50px rgba(0, 0, 0, .35); }
+.stk .row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 22px; }
+.stk .serif { font-size: clamp(24px, 3.4vw, 42px); color: #fff; }
+
+/* ==========================================================
+   8. GORRAS (edición limitada)
+   ========================================================== */
+.cap-s { position: relative; background: var(--sand); color: #fff; padding: 130px 0 120px; overflow: hidden; isolation: isolate; min-height: 640px; }
+.cap-s .ghost { position: absolute; right: -2vw; top: 4vw; z-index: -1; font-weight: 600; font-size: clamp(120px, 26vw, 380px); letter-spacing: -.07em; line-height: .8; color: transparent; -webkit-text-stroke: 1.5px rgba(255, 255, 255, .3); }
+.cap-s .wrap { display: flex; justify-content: flex-end; }
+.cap-s .in { max-width: 520px; }
+.cap-s h2 { font-weight: 600; font-size: clamp(56px, 11vw, 160px); letter-spacing: -.06em; line-height: .86; }
+.cap-s h2 em { color: var(--navy); }
+.cap-s p { margin: 22px 0 26px; font-size: 19px; opacity: .92; max-width: 440px; }
+.cap-s .cut.cap { filter: none; }
+@media (max-width: 860px) { .cap-s .wrap { justify-content: flex-start; } .cap-s .in { margin-top: 36vw; } }
+
+/* ==========================================================
+   9. MÁS ARTÍCULOS
+   ========================================================== */
+.more { background: var(--navy); color: var(--bone); padding: 120px 0; text-align: center; position: relative; overflow: hidden; isolation: isolate; }
+.more .orb { position: absolute; border-radius: 50%; filter: blur(90px); z-index: -1; pointer-events: none; }
+.more .a { width: 40vw; height: 40vw; left: -10vw; top: -14vw; background: rgba(35, 71, 214, .5); }
+.more .b { width: 30vw; height: 30vw; right: -8vw; bottom: -12vw; background: rgba(200, 113, 74, .4); }
+.more h2 { font-weight: 600; font-size: clamp(46px, 9vw, 130px); line-height: .9; letter-spacing: -.055em; }
+.more h2 em { color: var(--sand); }
+.more .chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 40px; }
+.more p { max-width: 460px; margin: 22px auto 0; opacity: .75; }
+
+/* ==========================================================
+   10. CIERRE Y PIE
+   ========================================================== */
+.final { text-align: center; padding: 130px 20px 40px; }
+.final h2 { font-weight: 600; font-size: clamp(44px, 8vw, 110px); line-height: .92; letter-spacing: -.055em; }
+.final h2 em { color: var(--sand); }
+.final p { max-width: 440px; margin: 20px auto 30px; color: var(--mut); }
+footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14px; padding: 36px 20px 44px; color: var(--mut); font-size: 14px; }
+footer a { text-decoration: none; margin-left: 16px; }
+
+/* ==========================================================
+   11. ANIMACIÓN AL HACER SCROLL Y AJUSTES
+   ========================================================== */
+.js .rv { opacity: 0; transform: translateY(30px); filter: blur(10px); transition: opacity .9s, transform .9s cubic-bezier(.2, .7, .2, 1), filter .9s; }
+.js .rv.in { opacity: 1; transform: none; filter: none; }
+@media (max-width: 860px) {
+  .cols { grid-template-columns: 1fr; }
+  .cut.sweater { position: relative; right: auto; top: auto; width: min(82vw, 420px); margin: -70px auto 10px; }
+  .sw { padding-top: 110px; }
+  .cut.cap { width: min(56vw, 300px); top: 24px; }
+  .vert { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  .js .rv { opacity: 1; transform: none; filter: none; }
+}
+</style>
+</head>
+<body>
+
+<header id="hd">
+  <a class="brand" href="index.html">Hacedores</a>
+  <nav>
+    <a href="inscripcion.html">Inscripción</a><a href="llevar.html">Qué llevar</a><a href="contactos.html">Contactos</a><a href="enlaces.html">Enlaces</a><a href="fotos.html">Fotos</a><a href="merch.html" class="on">Merch</a>
+  </nav>
+  <a class="btn sm" href="inscripcion.html">Inscribirme</a>
+  <button class="burger mono" id="bg" aria-label="Menú">Menú</button>
+</header>
+
+<main>
+<!-- 1 · HERO -->
+<div class="hero">
+  <svg class="spin" viewBox="0 0 120 120" aria-hidden="true"><defs><path id="c" d="M60,60 m-46,0 a46,46 0 1,1 92,0 a46,46 0 1,1 -92,0"/></defs><text><textPath href="#c" textLength="285" lengthAdjust="spacing">A pedido · Suéter oficial · Hacedores ·</textPath></text></svg>
+  <span class="mono" style="opacity:.85;margin-bottom:10px">Colección · Hacedores</span>
+  <h1 class="big">Merch</h1>
+  <div class="sub serif">llévate el campamento contigo.</div>
+  <div class="jump">
+    <a class="btn glass" href="#sueter">Suéter</a><a class="btn glass" href="#stickers">Stickers</a><a class="btn glass" href="#gorras">Gorras</a><a class="btn glass" href="#mas">Más</a>
+  </div>
+</div>
+
+<!-- 2 · EDITORIAL -->
+<section class="edit" id="identidad">
+  <svg class="topo" id="topo" viewBox="0 0 1000 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
+  <span class="cota" style="left:6%;top:90px">+860</span>
+  <span class="cota" style="right:22%;top:62%">+720</span>
+  <span class="cota" style="left:46%;bottom:80px">34.0522° N · 118.2437° W</span>
+  <span class="mono vert">Lámina 07 / Identidad</span>
+  <div class="wrap">
+    <span class="tag rv">La idea</span>
+    <h2 class="rv" style="margin-top:26px">No es solo un suéter. <em>Es un plano.</em></h2>
+    <div class="cols">
+      <div class="rv">
+        <p class="lede">Hacedores nació mirando mapas: curvas de nivel, cotas, coordenadas. La idea de que cada línea es un paso y cada paso es terreno que se camina.</p>
+      </div>
+      <div class="side rv">
+        <div class="fact"><b>A pedido</b><span>Se confecciona según los pedidos que lleguen.</span></div>
+        <div class="fact"><b>Tu talla</b><span>Exacta, para que te quede como debe.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 · SUÉTER -->
+<section class="sw" id="sueter">
+  <div class="ghost" aria-hidden="true">Suéter</div>
+  <div class="cut sweater"><img src="img/merch-sueter.png" alt="Suéter Hacedores" onerror="this.parentNode.classList.add('empty')"><div class="hold mono">Aquí va tu suéter<br>img/merch-sueter.png<br>(PNG sin fondo)</div></div>
+  <div class="wrap">
+    <div class="in">
+      <span class="tag blue rv" style="background:#fff;color:var(--navy)">A pedido</span>
+      <h2 class="rv" style="margin-top:22px"><em>T-shirt</em></h2>
+      <p class="t rv">Cada pieza se hace con tu talla. No hacemos de más: lo que se pide es lo que se confecciona.</p>
+      <ul class="specs rv">
+        <li><span>Tallas</span><span>XS · S · M · L · XL · XXL</span></li>
+        <li><span>Guía de tallas</span><span>Por confirmar</span></li>
+        <li><span>Precio</span><span>Por confirmar</span></li>
+      </ul>
+      <!-- FORMULARIO DE PEDIDO: aquí se coloca en el siguiente paso -->
+      <form class="order rv" id="order" novalidate>
+  <h3>Pide tu suéter</h3>
+  <p class="intro">Necesitamos tu talla exacta y un contacto para llevar el registro. Si ya lo pediste al inscribirte, no hace falta repetirlo.</p>
+
+  <div class="og">
+    <label class="of"><span class="mono">Nombre completo</span><input name="nombre" autocomplete="name" required></label>
+    <label class="of"><span class="mono">WhatsApp</span><input name="celular" type="tel" autocomplete="tel" placeholder="6000-0000" required></label>
+  </div>
+  <label class="of"><span class="mono">Correo (opcional)</span><input name="correo" type="email" autocomplete="email"></label>
+
+  <div class="of">
+    <span class="mono">Talla</span>
+    <div class="sz">
+      <label><input type="radio" name="talla" value="XS" required><span>XS</span></label>
+      <label><input type="radio" name="talla" value="S"><span>S</span></label>
+      <label><input type="radio" name="talla" value="M"><span>M</span></label>
+      <label><input type="radio" name="talla" value="L"><span>L</span></label>
+      <label><input type="radio" name="talla" value="XL"><span>XL</span></label>
+      <label><input type="radio" name="talla" value="XXL"><span>XXL</span></label>
+    </div>
+  </div>
+
+  <div class="of">
+    <span class="mono">Cantidad</span>
+    <div class="qty"><button type="button" id="qm" aria-label="Menos">−</button><output id="qn">1</output><button type="button" id="qp" aria-label="Más">+</button></div>
+  </div>
+
+  <label class="dz of" id="dz"><input type="file" name="comp" accept="image/*,application/pdf"><span id="dzt">📎 Adjuntar comprobante de abono (opcional)</span></label>
+
+  <input name="web" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+  <button class="btn light" id="osend" type="submit">Enviar pedido</button>
+</form>
+
+<div class="order done" id="odone" hidden>
+  <span class="mono">Pedido recibido</span>
+  <div class="n" id="onum">P-000</div>
+  <p>Guarda tu número. Te escribiremos por WhatsApp para confirmar y coordinar el pago.</p>
+</div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 · STICKERS -->
+<section class="stk" id="stickers">
+  <span class="tag sand r rv" style="align-self:flex-start;position:absolute;top:130px;right:clamp(20px,5vw,64px)">Gratis en el camp</span>
+  <h2 class="rv">Stickers</h2>
+  <div class="row rv"><span class="serif">uno para cada campista.</span></div>
+</section>
+
+<!-- 5 · GORRAS -->
+<section class="cap-s" id="gorras">
+  <div class="ghost" aria-hidden="true">Gorra</div>
+  <div class="cut cap"><img src="img/merch-gorra.png" alt="Gorra Hacedores" onerror="this.parentNode.classList.add('empty')"><div class="hold mono">Aquí va tu gorra<br>img/merch-gorra.png<br>(PNG sin fondo)</div></div>
+  <div class="wrap">
+    <div class="in">
+      <span class="tag rv">Edición limitada</span>
+      <h2 class="rv" style="margin-top:22px">Gorras<br><em>pocas.</em></h2>
+      <p class="rv">Un posible lanzamiento con muy pocas unidades. Si sale, será de los primeros en agotarse.</p>
+      <span class="btn light rv" style="opacity:.85;cursor:default">Próximamente</span>
+    </div>
+  </div>
+</section>
+
+<!-- 6 · MÁS -->
+<section class="more" id="mas">
+  <div class="orb a"></div><div class="orb b"></div>
+  <div class="wrap">
+    <h2 class="rv">¿Y <em>qué más?</em></h2>
+    <div class="chips rv"><span class="tag">Pulseras · en evaluación</span><span class="tag sand r">Otras ideas</span><span class="tag blue">Se viene</span></div>
+    <p class="rv">Se están viendo más artículos. Los iremos anunciando por aquí y en el grupo.</p>
+  </div>
+</section>
+
+<!-- CIERRE -->
+<div class="final wrap">
+  <h2 class="rv">Pide tu sueter<br><em>al inscribirte.</em></h2>
+  <p class="rv">También va incluido en el formulario de inscripción, con tu talla.</p>
+  <a class="btn rv" href="inscripcion.html">Inscribirme y pedir →</a>
+</div>
+</main>
+
+<footer class="wrap">
+  <span>© Hacedores · del oír al vivir</span>
+  <span><a href="index.html">Inicio</a><a href="contactos.html">Contactos</a><a href="enlaces.html">Enlaces</a></span>
+</footer>
+
+<script>
+document.documentElement.classList.add("js");
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const red=matchMedia("(prefers-reduced-motion:reduce)").matches;
+
+/* Barra: se oculta al bajar, aparece al subir */
+const hd=$("#hd");let ly=scrollY;
+$("#bg").onclick=()=>{hd.classList.toggle("open");hd.classList.remove("hide")};
+addEventListener("scroll",()=>{const y=scrollY;if(hd.classList.contains("open"))return;
+ if(y>ly+6&&y>80)hd.classList.add("hide");else if(y<ly-6||y<40)hd.classList.remove("hide");ly=y},{passive:true});
+
+/* Aparecer al hacer scroll */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}}),{threshold:.12});
+$$(".rv").forEach(e=>io.observe(e));
+
+/* Líneas topográficas de la sección editorial (se dibujan al entrar) */
+let h="";
+[[250,260,13,1.5],[780,640,11,1.3]].forEach(([cx,cy,n,s],g)=>{
+ for(let i=0;i<n;i++){const r=28+i*30*s/1.4;let d="";
+  for(let a=0;a<=360;a+=6){const t=a*Math.PI/180,k=1+.2*Math.sin(3*t+i*.35+g)+.11*Math.sin(5*t-i*.2)+.06*Math.sin(7*t+1);
+   d+=(a?"L":"M")+(cx+Math.cos(t)*r*k*1.3).toFixed(1)+" "+(cy+Math.sin(t)*r*k).toFixed(1)}
+  h+=`<path d="${d}Z" data-i="${i}"/>`}});
+$("#topo").innerHTML=h;
+new IntersectionObserver((es,o)=>{if(!es[0].isIntersecting||red)return;o.disconnect();
+ $$("#topo path").forEach(p=>{const L=p.getTotalLength();p.style.strokeDasharray=L;p.style.strokeDashoffset=L;p.getBoundingClientRect();
+  p.style.transition=`stroke-dashoffset 2.8s ${p.dataset.i*.08}s ease-out`;p.style.strokeDashoffset=0})},{threshold:.15}).observe($("#identidad"));
+  /* ===== Formulario de pedido ===== */
+const ENDPOINT = "https://script.google.com/macros/s/AKfycbxDZGNWjDmuZFWbIusaoZBNx0FZDL0xavoQpy3S3SW6W_gemYRt1_eHO2mo57llj4GY/exec";
+
+/* comprobante a base64 (las fotos se reducen para que viajen rápido) */
+const aB64 = f => new Promise(res => {
+  if (!f) return res(null);
+  if (f.type.startsWith("image/")) {
+    const img = new Image();
+    img.onload = () => {
+      const k = Math.min(1, 1600 / Math.max(img.width, img.height));
+      const c = document.createElement("canvas");
+      c.width = img.width * k; c.height = img.height * k;
+      c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+      res({name: f.name.replace(/\.\w+$/, "") + ".jpg", type: "image/jpeg", data: c.toDataURL("image/jpeg", .8).split(",")[1]});
+    };
+    img.onerror = () => res(null);
+    img.src = URL.createObjectURL(f);
+  } else if (f.size < 4e6) {
+    const r = new FileReader();
+    r.onload = () => res({name: f.name, type: f.type, data: r.result.split(",")[1]});
+    r.readAsDataURL(f);
+  } else res(null);
+});
+
+const of = $("#order");
+let q = 1;
+const setQ = n => { q = Math.min(10, Math.max(1, n)); $("#qn").textContent = q; };
+$("#qm").onclick = () => setQ(q - 1);
+$("#qp").onclick = () => setQ(q + 1);
+
+/* el nombre del suéter se copia del nombre completo si está vacío */
+of.nombre.addEventListener("blur", () => { if (!of.shirtNombre.value) of.shirtNombre.value = of.nombre.value; });
+
+of.comp.onchange = () => { $("#dzt").textContent = of.comp.files[0] ? "📎 " + of.comp.files[0].name : "📎 Adjuntar comprobante de abono (opcional)"; };
+
+of.onsubmit = async e => {
+  e.preventDefault();
+  if (!of.reportValidity()) return;
+  const btn = $("#osend"); btn.disabled = true; btn.textContent = "Enviando…";
+  const d = {
+    action: "pedido",
+    nombre: of.nombre.value.trim(), celular: of.celular.value.trim(), correo: of.correo.value.trim(),
+    shirtNombre: of.shirtNombre.value.trim(), talla: of.talla.value, cantidad: q,
+    web: of.web.value, archivo: await aB64(of.comp.files[0])
+  };
+  try {
+    const r = await fetch(ENDPOINT, {method: "POST", body: JSON.stringify(d)});
+    const j = await r.json();
+    if (!j.ok) throw 0;
+    $("#onum").textContent = j.numero;
+  } catch (err) {
+    alert("No pudimos enviar tu pedido. Revisa tu conexión e intenta de nuevo.");
+    btn.disabled = false; btn.textContent = "Enviar pedido";
+    return;
+  }
+  of.hidden = true; $("#odone").hidden = false;
+};
+</script>
+<script src="js/proximamente.js"></script>
+</body>
+</html>
