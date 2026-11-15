@@ -69,8 +69,22 @@ async function gas(request, env) {
 
 export default {
   async fetch(request, env) {
-    const { pathname } = new URL(request.url);
-    if (pathname === "/api/gas") return gas(request, env);
-    return env.ASSETS.fetch(request);                    // todo lo demás: tu sitio
+    try {
+      const { pathname } = new URL(request.url);
+
+      if (pathname === "/api/gas") {
+        return await gas(request, env);
+      }
+
+      return await env.ASSETS.fetch(request);
+
+    } catch (err) {
+      console.error("ERROR INTERNO DEL WORKER:", err.stack || err);
+
+      return json({
+        ok: false,
+        message: "Error interno del Worker. Revisa los registros de Cloudflare."
+      }, 500);
+    }
   }
 };
