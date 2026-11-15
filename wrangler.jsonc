@@ -13,7 +13,6 @@
      Si luego usas dominio propio, agrégalo separado por coma. */
   "vars": {
     "ALLOWED_ORIGINS": "https://camp.cfmshahahbautista.workers.dev"
-    "APPS_SCRIPT_URL": "https://script.google.com/macros/s/AKfycbxkZgteMwtrADzdqMqiWkF_JUVUXwzX6U-OQ5xaWrk8mB3HyhK58a3N7SuJT-DBgHed/exec"
   },
 
   "observability": { "enabled": true }
