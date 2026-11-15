@@ -57,14 +57,18 @@ async function gas(request, env) {
   if (!largo) return json({ ok: false, message: "Solicitud vacía." }, 400);
   if (largo > MAX_BYTES) return json({ ok: false, message: "Los archivos adjuntos son demasiado grandes." }, 413);
 
-  /* el cuerpo pasa tal cual, sin procesarlo (ahorra CPU con las imágenes en base64) */
-  const r = await fetch(destino(env, ""), {
-    method: "POST",
-    headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body: request.body,
-    redirect: "follow"
-  });
-  return responder(r);
+  const cuerpo = await request.arrayBuffer();
+
+const r = await fetch(destino(env, ""), {
+  method: "POST",
+  headers: {
+    "Content-Type": "text/plain;charset=utf-8"
+  },
+  body: cuerpo,
+  redirect: "follow"
+});
+
+return responder(r);
 }
 
 export default {
