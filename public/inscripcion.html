@@ -9,7 +9,7 @@
 /* ==========================================================
    0. IMAGEN DEL BANNER (ruta relativa a este archivo)
    ========================================================== */
-:root { --banner-img: url("img/IMG_5249.JPG"); }
+:root { --banner-img: url("img/inscripcion.jpg"); }
 
 /* ==========================================================
    1. BASE
@@ -146,6 +146,7 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--blue); outl
   margin-top: 8px; padding: 14px 20px; border-radius: 20px; font-size: 14px;
   background: rgba(35, 71, 214, .07); color: #26397f;
 }
+.errbox { margin-top: 18px; padding: 14px 20px; border-radius: 20px; background: rgba(200, 60, 60, .1); color: #8a2a2a; font-size: 15px; }
 .nav2 { display: flex; justify-content: space-between; gap: 12px; margin-top: 30px; }
 
 /* chips y segmentado */
@@ -218,7 +219,7 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--blue); outl
 </header>
 
 <main>
-<!-- BANNER: pon tu imagen en img/banner-inscripcion.jpg -->
+<!-- BANNER: pon tu imagen en img/inscripcion.jpg -->
 <div class="banner">
   <span class="mono" style="opacity:.85;margin-bottom:14px">Inscripciones abiertas</span>
   <h1>Inscripción<br><em>tu lugar en Hacedores</em></h1>
@@ -288,7 +289,6 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--blue); outl
         <label class="opt"><input type="radio" name="quiereShirt" value="no"><span>Ahora no</span></label>
       </div>
       <div class="shirt" id="shirt">
-        <label class="f"><span class="mono">Nombre en el suéter</span><input name="shirtNombre" id="shirtNombre" placeholder="Como quieres que aparezca"></label>
         <div><span class="mono" style="display:block;margin:0 0 8px 6px;color:var(--mut)">Talla</span>
           <div class="opts">
             <label class="opt"><input type="radio" name="talla" value="XS"><span>XS</span></label>
@@ -314,7 +314,9 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--blue); outl
       <button type="button" class="btn ghost sm" id="addAb">+ Agregar abono</button>
       <div class="note" style="margin-top:18px">Si todavía no has pagado, puedes continuar y enviar los comprobantes después.</div>
     </div>
+
     <input name="web" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+
     <!-- 6 · CONFIRMAR -->
     <div class="st" hidden>
       <span class="mono" style="color:var(--sand)">Paso 6</span>
@@ -323,6 +325,8 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--blue); outl
       <div class="sum" id="sum"></div>
       <label class="agree"><input type="checkbox" id="agree" required><span>Confirmo que los datos son correctos y que cuento con la autorización de mi padre, madre o tutor si soy menor de edad.</span></label>
     </div>
+
+    <div class="errbox" id="err" role="alert" hidden></div>
 
     <div class="nav2" id="nav2">
       <button type="button" class="btn ghost" id="prev">← Atrás</button>
@@ -344,8 +348,8 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--blue); outl
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 
 /* ===== Datos del campamento: edita aquí ===== */
-const CFG={fechaTxt:"02/10/2027",lugar:"Río Indio",costo:"US$ 45.00",costoNum:45};
-const ENDPOINT=null;   // cuando haya backend: "/api/inscripcion" (recibe multipart con los comprobantes)
+const CFG={fechaTxt:"02/10/2027",lugar:"Río Indio",costoNum:45};
+const ENDPOINT="/api/gas";
 $$("[data-cfg]").forEach(e=>e.textContent=CFG[e.dataset.cfg]);
 
 /* ===== Barra ===== */
@@ -354,109 +358,62 @@ $("#bg").onclick=()=>{hd.classList.toggle("open");hd.classList.remove("hide")};
 addEventListener("scroll",()=>{const y=scrollY;if(hd.classList.contains("open"))return;
  if(y>ly+6&&y>80)hd.classList.add("hide");else if(y<ly-6||y<40)hd.classList.remove("hide");ly=y},{passive:true});
 
+/* ===== Mensajes dentro de la página (en lugar de alertas) ===== */
+const msg=t=>{const b=$("#err");if(!t){b.hidden=true;b.textContent="";return}
+ b.textContent=t;b.hidden=false;b.scrollIntoView({block:"center",behavior:"smooth"})};
+
 /* ===== Pasos ===== */
 const NAMES=["Tú","Salud","Qué llevar","Suéter","Pago","Listo"];
-const S=$$("#f > .st"),f=$("#f");let st=0;
+const f=$("#f"),S=$$("#f > .st");let st=0;
 $("#steps").innerHTML=NAMES.map((n,i)=>`<div class="pillstep"><i>${i+1}</i>${n}</div>`).join("");
-function go(n, primera){
- st=n;S.forEach((e,i)=>e.hidden=i!==n);
+function go(n,primera){
+ st=n;msg("");S.forEach((e,i)=>e.hidden=i!==n);
  $$(".pillstep").forEach((p,i)=>{p.classList.toggle("on",i===n);p.classList.toggle("done",i<n)});
  $(".pillstep.on").scrollIntoView({inline:"center",block:"nearest",behavior:"smooth"});
  $("#bar").style.width=((n+1)/S.length*100)+"%";
  $("#prev").style.visibility=n?"visible":"hidden";
  $("#next").textContent=n===S.length-1?"Enviar inscripción":"Continuar →";
  if(n===S.length-1)summary();
- if (!primera) $("#steps").scrollIntoView({behavior: "smooth", block: "start"});
+ if(!primera)$("#steps").scrollIntoView({behavior:"smooth",block:"start"});
 }
 $("#prev").onclick=()=>go(st-1);
 
+/* Reglas por paso (las mismas que aplica el servidor) */
+const dig=t=>t.replace(/\D/g,"");
+function validar(p){
+ if(p===0){
+  if(!/^\d{1,2}$/.test(f.edad.value.trim())||Number(f.edad.value)<5)return "La edad debe ser un número entero entre 5 y 99.";
+  const c=f.celular.value.trim(),d=dig(c);
+  if(!/^[0-9+\s()-]+$/.test(c)||!(d.length===8||(d.length===11&&d.startsWith("507"))))return "El celular debe tener 8 dígitos (o incluir el prefijo 507).";
+ }
+ if(p===1){
+  const t=f.emTel.value.trim(),d=dig(t);
+  if(!/^[0-9+\s()-]+$/.test(t)||d.length<7||d.length>15)return "El teléfono de emergencia no es válido.";
+ }
+ if(p===3&&f.quiereShirt.value==="si"&&!f.talla.value)return "Elige tu talla.";
+ if(p===4){
+  let suma=0;
+  for(const a of $$("#abonos .abono")){
+   const v=a.querySelector(".m").value.trim(),fi=a.querySelector("input[type=file]").files[0];
+   if(!v&&!fi)continue;
+   if(!/^\d+(\.\d{1,2})?$/.test(v)||Number(v)<=0)return "Cada abono debe tener un monto mayor que cero, con máximo dos decimales.";
+   suma+=Number(v);
+   if(fi){
+    if(!["image/jpeg","image/png","application/pdf"].includes(fi.type))return "Los comprobantes deben ser JPG, PNG o PDF.";
+    if(fi.type==="application/pdf"&&fi.size>2*1024*1024)return "Cada PDF debe pesar máximo 2 MB.";
+   }
+  }
+  if(suma>CFG.costoNum+.001)return `Los abonos no pueden superar US$ ${CFG.costoNum}.00.`;
+ }
+ return "";
+}
 $("#next").onclick=()=>{
-  const campos = [
-    ...S[st].querySelectorAll("input,select,textarea")
-  ].filter(i => i.offsetParent !== null || i.type === "radio");
-
-  for (const campo of campos) {
-    campo.setCustomValidity("");
-  }
-
-  if (!campos.every(i => i.reportValidity())) return;
-
-  // Edad: solamente números enteros
-  if (st === 0) {
-    const edad = f.edad;
-    const n = Number(edad.value);
-
-    if (!Number.isInteger(n) || n < 5 || n > 99) {
-      edad.setCustomValidity("Introduce una edad entera entre 5 y 99.");
-      edad.reportValidity();
-      return;
-    }
-
-    // Celular panameño: 8 dígitos o prefijo 507
-    const tel = f.celular.value.trim();
-    const digitos = tel.replace(/\D/g, "");
-
-    if (!/^[0-9+\s()-]+$/.test(tel) ||
-        !(digitos.length === 8 ||
-          (digitos.length === 11 && digitos.startsWith("507")))) {
-      f.celular.setCustomValidity("Introduce un celular válido.");
-      f.celular.reportValidity();
-      return;
-    }
-  }
-
-  // Talla obligatoria si solicita suéter
-  if (st === 3 && f.quiereShirt.value === "si" && !f.talla.value) {
-    alert("Elige tu talla.");
-    return;
-  }
-
-  // Validar los abonos antes de continuar
-  if (st === 4) {
-    let suma = 0;
-
-    for (const a of $$("#abonos .abono")) {
-      const montoInput = a.querySelector(".m");
-      const archivo = a.querySelector('input[type="file"]').files[0];
-      const valor = montoInput.value.trim();
-
-      if (!valor && !archivo) continue;
-
-      const monto = Number(valor);
-
-      if (!valor || !Number.isFinite(monto) || monto <= 0) {
-        alert("Cada abono registrado debe tener un monto mayor que cero.");
-        montoInput.focus();
-        return;
-      }
-
-      if (!/^\d+(\.\d{1,2})?$/.test(valor)) {
-        alert("Introduce los montos con máximo dos decimales.");
-        montoInput.focus();
-        return;
-      }
-
-      suma += monto;
-
-      if (archivo && ![
-        "image/jpeg",
-        "image/png",
-        "application/pdf"
-      ].includes(archivo.type)) {
-        alert("Solo se permiten imágenes JPG, PNG o archivos PDF.");
-        return;
-      }
-    }
-
-    if (suma > 45.001) {
-      alert("Los abonos no pueden superar los US$ 45.00.");
-      return;
-    }
-  }
-
-  st < S.length - 1 ? go(st + 1) : send();
+ msg("");
+ const campos=[...S[st].querySelectorAll("input,select,textarea")].filter(i=>i.offsetParent!==null);
+ if(!campos.every(i=>i.reportValidity()))return;
+ const m=validar(st);if(m){msg(m);return}
+ st<S.length-1?go(st+1):enviar();
 };
-
 
 /* ===== Paso 3: lista ===== */
 const L={"Para dormir":["Carpa","Colchón inflable (bolsa de dormir, etc.)","Sábana y almohada","Tolda (o algo para tapar la carpa si llueve)","Linterna"],
@@ -468,9 +425,7 @@ const upd=()=>$("#cnt").textContent=`${$$("#lista input:checked").length} / ${n}
 $("#lista").onchange=upd;upd();
 
 /* ===== Paso 4: suéter ===== */
-const sh=()=>{const si=f.quiereShirt.value==="si";$("#shirt").hidden=!si;
- if(si&&!$("#shirtNombre").value)$("#shirtNombre").value=f.nombre.value};
-$$("[name=quiereShirt]").forEach(r=>r.onchange=sh);
+$$("[name=quiereShirt]").forEach(r=>r.onchange=()=>{$("#shirt").hidden=f.quiereShirt.value!=="si"});
 
 /* ===== Paso 5: abonos con comprobante ===== */
 let ab=0;
@@ -479,12 +434,12 @@ function addAbono(){
  d.innerHTML=`<div class="top"><span class="mono" style="color:var(--mut)">Abono ${id}</span>${id>1?'<button type="button" class="x" aria-label="Quitar">×</button>':""}</div>
  <div class="g"><label class="f"><span class="mono">Monto (US$)</span><input class="m" name="abMonto${id}" type="number" min="0" step="0.01" inputmode="decimal"></label>
  <label class="f"><span class="mono">Método</span><select name="abMetodo${id}"><option>Yappy</option><option>Transferencia / ACH</option><option>Efectivo</option></select></label></div>
- <label class="drop"><input type="file" name="abFile${id}" accept="image/jpeg,image/png,application/pdf"><span>📎</span><span><b>Adjuntar comprobante</b></span><span class="mono">Foto o PDF</span></label>`;
+ <label class="drop"><input type="file" name="abFile${id}" accept="image/jpeg,image/png,application/pdf"><span>📎</span><span><b>Adjuntar comprobante</b></span><span class="mono">JPG, PNG o PDF</span></label>`;
  const fi=d.querySelector("input[type=file]"),dr=d.querySelector(".drop");
  fi.onchange=()=>{const x=fi.files[0];if(!x)return;
   dr.innerHTML="";dr.append(fi);
   if(x.type.startsWith("image/")){const im=document.createElement("img");im.src=URL.createObjectURL(x);dr.append(im)}
-  const s=document.createElement("span");s.innerHTML=`<b></b>`;s.firstChild.textContent=x.name;dr.append(s)};
+  const s=document.createElement("span");s.innerHTML="<b></b>";s.firstChild.textContent=x.name;dr.append(s)};
  ["dragover","dragenter"].forEach(e=>dr.addEventListener(e,ev=>{ev.preventDefault();dr.classList.add("over")}));
  ["dragleave","drop"].forEach(e=>dr.addEventListener(e,()=>dr.classList.remove("over")));
  d.querySelector(".m").oninput=total;
@@ -498,194 +453,85 @@ function total(){
 }
 $("#addAb").onclick=addAbono;addAbono();
 
-/* ===== Paso 6: resumen y envío ===== */
+/* ===== Paso 6: resumen ===== */
 function summary(){
- const v=n=>(f[n].value||"—").trim()||"—",ab=$("#tot").textContent;
- const shirt=f.quiereShirt.value==="si"?`${v("shirtNombre")} · ${f.talla.value||"sin talla"}`:"No por ahora";
+ const v=k=>((f[k]&&f[k].value)||"").trim()||"—",ab=$("#tot").textContent;
+ const shirt=f.quiereShirt.value==="si"?`Talla ${f.talla.value||"sin elegir"}`:"No por ahora";
  const rows=[["Nombre",v("nombre")],["Edad",v("edad")],["Celular",v("celular")],["Correo",v("correo")],["Iglesia",v("iglesia")],["Pastor",v("pastor")],["Emergencia",v("emNombre")+" · "+v("emTel")],["Salud","Información completada"],["Suéter",shirt],["Abonado",ab]];
  $("#sum").innerHTML=rows.map(()=>"<div><span></span><span></span></div>").join("");
  $$("#sum div").forEach((d,i)=>{d.children[0].textContent=rows[i][0];d.children[1].textContent=rows[i][1]});
 }
 
-async function send() {
-  const ENDPOINT = "/api/gas";
-
-  if (!$("#agree").checked) {
-    $("#agree").reportValidity();
-    return;
+/* ===== Comprobante → base64 (las fotos se reducen y quedan en JPEG) ===== */
+function aBase64(file){
+ return new Promise((ok,no)=>{
+  if(!file)return ok(null);
+  if(file.type==="application/pdf"){
+   if(file.size>2*1024*1024)return no(new Error("Cada PDF debe pesar máximo 2 MB."));
+   const r=new FileReader();
+   r.onload=()=>ok({name:file.name,type:file.type,data:String(r.result).split(",")[1]});
+   r.onerror=()=>no(new Error("No se pudo leer el PDF."));
+   return r.readAsDataURL(file);
   }
-
-  const btn = $("#next");
-
-  if (btn.disabled) return;
-
-  btn.disabled = true;
-  btn.textContent = "Preparando inscripción…";
-
-  // Convierte imágenes a JPEG comprimido y limita los PDF
-  async function archivoBase64(file) {
-    if (!file) return null;
-
-    const permitidos = [
-      "image/jpeg",
-      "image/png",
-      "application/pdf"
-    ];
-
-    if (!permitidos.includes(file.type)) {
-      throw new Error("Formato de comprobante no permitido.");
-    }
-
-    if (file.type === "application/pdf") {
-      if (file.size > 2 * 1024 * 1024) {
-        throw new Error("Cada PDF debe pesar máximo 2 MB.");
-      }
-
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-
-        reader.onload = () => {
-          const data = reader.result.split(",")[1];
-
-          resolve({
-            name: file.name,
-            type: "application/pdf",
-            data
-          });
-        };
-
-        reader.onerror = () =>
-          reject(new Error("No se pudo leer el PDF."));
-
-        reader.readAsDataURL(file);
-      });
-    }
-
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      const url = URL.createObjectURL(file);
-
-      img.onload = () => {
-        try {
-          const k = Math.min(
-            1,
-            1600 / Math.max(img.width, img.height)
-          );
-
-          const canvas = document.createElement("canvas");
-          canvas.width = Math.round(img.width * k);
-          canvas.height = Math.round(img.height * k);
-
-          const ctx = canvas.getContext("2d");
-
-          if (!ctx) throw new Error("No se pudo procesar la imagen.");
-
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-          const data = canvas.toDataURL("image/jpeg", 0.75).split(",")[1];
-
-          if (data.length * 0.75 > 2 * 1024 * 1024) {
-            throw new Error("La imagen sigue siendo demasiado grande.");
-          }
-
-          resolve({
-            name: file.name.replace(/\.\w+$/, "") + ".jpg",
-            type: "image/jpeg",
-            data
-          });
-        } catch (err) {
-          reject(err);
-        } finally {
-          URL.revokeObjectURL(url);
-        }
-      };
-
-      img.onerror = () => {
-        URL.revokeObjectURL(url);
-        reject(new Error("No se pudo abrir la imagen."));
-      };
-
-      img.src = url;
-    });
-  }
-
-  try {
-    const campos = [
-      "nombre", "edad", "celular", "correo",
-      "iglesia", "pastor", "emNombre", "emTel",
-      "alergia", "dieta", "enfermedad", "medicina",
-      "quiereShirt", "shirtNombre", "talla", "web"
-    ];
-
-    const d = { action: "inscripcion" };
-
-    campos.forEach(k => {
-      d[k] = f[k] ? f[k].value.trim() : "";
-    });
-
-    d.abonos = [];
-
-    for (const a of $$("#abonos .abono")) {
-      const file = a.querySelector('input[type="file"]').files[0];
-      const valor = a.querySelector(".m").value.trim();
-
-      if (!valor && !file) continue;
-
-      const monto = Number(valor);
-
-      if (!Number.isFinite(monto) || monto <= 0) {
-        throw new Error("Hay un abono con un monto inválido.");
-      }
-
-      const archivo = await archivoBase64(file);
-
-      d.abonos.push({
-        monto,
-        metodo: a.querySelector("select").value,
-        archivo
-      });
-    }
-
-    btn.textContent = "Enviando inscripción…";
-
-    const respuesta = await fetch(ENDPOINT, {
-      method: "POST",
-      body: JSON.stringify(d)
-    });
-
-    if (!respuesta.ok) {
-      throw new Error("No se pudo conectar con el servidor.");
-    }
-
-    const j = await respuesta.json();
-
-    if (!j.ok) {
-      if (j.code === "DUPLICATE") {
-        throw new Error(j.message);
-      }
-
-      throw new Error(j.message || "No se pudo registrar la inscripción.");
-    }
-
-    $("#num").textContent = j.numero;
-
-    f.hidden = true;
-    $("#steps").hidden = true;
-    document.querySelector(".bar").hidden = true;
-    $("#ok").hidden = false;
-
-    scrollTo({ top: 0, behavior: "smooth" });
-
-  } catch (err) {
-    console.error("Error de inscripción:", err);
-
-    alert(err.message || "No pudimos enviar tu inscripción. Intenta nuevamente.");
-
-    btn.disabled = false;
-    btn.textContent = "Enviar inscripción";
-  }
+  const url=URL.createObjectURL(file),img=new Image();
+  img.onload=()=>{
+   URL.revokeObjectURL(url);
+   let lado=1600,q=.8,data="";
+   for(let i=0;i<4;i++){
+    const k=Math.min(1,lado/Math.max(img.width,img.height)),c=document.createElement("canvas");
+    c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);
+    const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.drawImage(img,0,0,c.width,c.height);
+    data=c.toDataURL("image/jpeg",q).split(",")[1];
+    if(data.length*.75<1.8*1024*1024)break;
+    lado*=.75;q-=.1;
+   }
+   if(data.length*.75>=2*1024*1024)return no(new Error("La imagen es demasiado pesada. Usa una más liviana."));
+   ok({name:file.name.replace(/\.\w+$/,"")+".jpg",type:"image/jpeg",data});
+  };
+  img.onerror=()=>{URL.revokeObjectURL(url);no(new Error("No se pudo abrir la imagen. Prueba con otra foto o con un PDF."))};
+  img.src=url;
+ });
 }
-go(0, true);
+
+/* ===== Envío ===== */
+let enviando=false;
+async function enviar(){
+ if(enviando)return;
+ msg("");
+ if(!$("#agree").checked){$("#agree").reportValidity();return}
+ const btn=$("#next"),txt=btn.textContent;
+ enviando=true;btn.disabled=true;btn.textContent="Enviando…";
+ try{
+  const campos=["nombre","edad","celular","correo","iglesia","pastor","emNombre","emTel","alergia","dieta","enfermedad","medicina","web"];
+  const d={action:"inscripcion"};
+  campos.forEach(k=>d[k]=(f[k]?f[k].value:"").trim());
+  d.quiereShirt=f.quiereShirt.value;
+  d.talla=d.quiereShirt==="si"?f.talla.value:"";
+  d.abonos=[];
+  for(const a of $$("#abonos .abono")){
+   const fi=a.querySelector("input[type=file]").files[0],v=a.querySelector(".m").value.trim();
+   if(!v&&!fi)continue;
+   d.abonos.push({monto:Number(v),metodo:a.querySelector("select").value,archivo:await aBase64(fi)});
+  }
+  const ctrl=new AbortController(),t=setTimeout(()=>ctrl.abort(),90000);
+  let r;
+  try{r=await fetch(ENDPOINT,{method:"POST",body:JSON.stringify(d),signal:ctrl.signal})}
+  finally{clearTimeout(t)}
+  const j=await r.json().catch(()=>null);
+  if(!j)throw new Error("El servidor respondió algo inesperado. Intenta de nuevo en un momento.");
+  if(!j.ok||!j.numero)throw new Error(j.message||"No se pudo registrar la inscripción.");
+  $("#num").textContent=j.numero;
+  f.hidden=true;$("#steps").hidden=true;$(".bar").hidden=true;$("#ok").hidden=false;
+  scrollTo({top:0,behavior:"smooth"});
+ }catch(e){
+  console.error("Inscripción:",e);
+  msg(e.name==="AbortError"?"La conexión tardó demasiado. Revisa tu internet e intenta de nuevo."
+   :e instanceof TypeError?"No hay conexión con el servidor. Revisa tu internet e intenta de nuevo."
+   :(e.message||"No pudimos enviar tu inscripción."));
+  btn.disabled=false;btn.textContent=txt;
+ }finally{enviando=false}
+}
+go(0,true);
 </script>
 </body>
 </html>
