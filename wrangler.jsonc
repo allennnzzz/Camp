@@ -1,15 +1,16 @@
 {
-  "name": "campamento",
+  "name": "camp",
   "main": "worker.js",
-  "compatibility_date": "2025-09-01",
+  "compatibility_date": "2026-11-13",
 
-  /* Tu sitio: todo lo que esté dentro de la carpeta public/ */
+  /* Tu sitio: TODO lo que esté dentro de la carpeta public/ (y solo eso) */
   "assets": {
     "directory": "./public",
     "binding": "ASSETS"
   },
 
-  /* Variables NO secretas. Cambia por tu dirección real. */
+  /* Variable NO secreta: la dirección exacta de tu sitio (sin barra final).
+     Si luego usas dominio propio, agrégalo separado por coma. */
   "vars": {
     "ALLOWED_ORIGINS": "https://camp.cfmshahahbautista.workers.dev"
   },

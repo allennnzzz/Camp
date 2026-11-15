@@ -453,7 +453,7 @@ new IntersectionObserver((es,o)=>{if(!es[0].isIntersecting||red)return;o.disconn
  $$("#topo path").forEach(p=>{const L=p.getTotalLength();p.style.strokeDasharray=L;p.style.strokeDashoffset=L;p.getBoundingClientRect();
   p.style.transition=`stroke-dashoffset 2.8s ${p.dataset.i*.08}s ease-out`;p.style.strokeDashoffset=0})},{threshold:.15}).observe($("#identidad"));
   /* ===== Formulario de pedido ===== */
-const ENDPOINT = "https://script.google.com/macros/s/AKfycbxDZGNWjDmuZFWbIusaoZBNx0FZDL0xavoQpy3S3SW6W_gemYRt1_eHO2mo57llj4GY/exec";
+const ENDPOINT = "https://script.google.com/macros/s/AKfycbxkZgteMwtrADzdqMqiWkF_JUVUXwzX6U-OQ5xaWrk8mB3HyhK58a3N7SuJT-DBgHed/exec";
 
 /* comprobante a base64 (las fotos se reducen para que viajen rápido) */
 const aB64 = f => new Promise(res => {

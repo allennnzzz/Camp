@@ -841,10 +841,10 @@ if(CFG.fecha){tick();setInterval(tick,1000)}
    Cada uno puede ser imagen (.jpg/.webp) o video (.mp4/.webm). Si falta uno, usa el otro. */
 const MOM = [
   {id:"fogata",    t:"Ganadores",    v:"img/final_v.mp4", h:"img/final_h.mp4", txt:"La noche del escuadron BRAVO."},
-  {id:"alabanza",  t:"EL Chino",  v:"img/chino.jpg", h:"img/chino.jpg", txt:"Preparado para el desafío."},
+  {id:"alabanza",  t:"EL Chino",  v:"img/chino.JPG", h:"img/chino.JPG", txt:"Preparado para el desafío."},
   {id:"rio",       t:"juegos",    v:"img/juego_v.mp4", h:"img/juego_h.mp4", txt:"Diversión y adrenalina."},
-  {id:"juegos",    t:"noches",    v:"img/noche.jpg", h:"img/noche.jpg", txt:"Risas y equipos."},
-  {id:"comunidad", t:"Estudios biblicos", v:"img/estudio_v.jpg", h:"img/estudio_h.jpg", txt:"Aprendiendo y compartiendo juntos."},
+  {id:"juegos",    t:"noches",    v:"img/noche.JPG", h:"img/noche.JPG", txt:"Risas y equipos."},
+  {id:"comunidad", t:"Estudios biblicos", v:"img/estudio_v.JPG", h:"img/estudio_h.JPG", txt:"Aprendiendo y compartiendo juntos."},
 ];
 
 const LS = (k, v) => {
@@ -853,7 +853,7 @@ const LS = (k, v) => {
 };
 
 /* Capa de datos: hoy localStorage; con API pasa a un servidor */
-const GAS = "https://script.google.com/macros/s/AKfycbxDZGNWjDmuZFWbIusaoZBNx0FZDL0xavoQpy3S3SW6W_gemYRt1_eHO2mo57llj4GY/exec";   // la misma URL
+const GAS = "https://script.google.com/macros/s/AKfycbxkZgteMwtrADzdqMqiWkF_JUVUXwzX6U-OQ5xaWrk8mB3HyhK58a3N7SuJT-DBgHed/exec";   // la misma URL
 
 const store = {
   async list(id) {
