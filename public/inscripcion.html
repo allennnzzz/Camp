@@ -348,7 +348,7 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--blue); outl
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 
 /* ===== Datos del campamento: edita aquí ===== */
-const CFG={fechaTxt:"02/10/2027",lugar:"Río Indio",costoNum:45};
+const CFG={fechaTxt:"06/02/2027",lugar:"Río Indio",costoNum:50};
 const ENDPOINT="/api/gas";
 $$("[data-cfg]").forEach(e=>e.textContent=CFG[e.dataset.cfg]);
 

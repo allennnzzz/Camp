@@ -897,9 +897,7 @@ async function scene(i) {
   $("#mx").textContent = m.txt;
   $("#mch").textContent = "Comentarios · " + m.t;
 
-  const lk = LS("hz-l-" + m.id) || {n:0, yo:false};
-  $("#mn").textContent = lk.n;
-  $("#mlike").classList.toggle("on", lk.yo);
+  pintarLikes();
 
   renderC(await store.list(m.id));
 }
@@ -924,11 +922,47 @@ $("#mprev").onclick = () => scene(mi - 1);
 $("#mnext").onclick = () => scene(mi + 1);
 mq.addEventListener("change", () => scene(mi));              /* al girar o redimensionar */
 
-$("#mlike").onclick = () => {
-  const id = MOM[mi].id, lk = LS("hz-l-" + id) || {n:0, yo:false};
-  lk.yo = !lk.yo; lk.n += lk.yo ? 1 : -1; LS("hz-l-" + id, lk);
-  $("#mn").textContent = lk.n; $("#mlike").classList.toggle("on", lk.yo);
+/* ---- Likes compartidos ---- */
+const likesDB = {
+  async todos() {
+    try { return await (await fetch(`${GAS}?action=likes`)).json(); }
+    catch (e) { return {}; }
+  },
+  async poner(id, delta) {
+    try {
+      const r = await fetch(GAS, {method: "POST", body: JSON.stringify({action: "like", id: id, delta: delta})});
+      const j = await r.json();
+      return j.ok ? j.n : null;
+    } catch (e) { return null; }
+  }
 };
+
+let conteo = {};
+
+function pintarLikes() {
+  const id = MOM[mi].id, yo = !!(LS("hz-l-" + id) || {}).yo;
+  $("#mn").textContent = conteo[id] || 0;
+  $("#mlike").classList.toggle("on", yo);
+}
+
+$("#mlike").onclick = async () => {
+  const id = MOM[mi].id, lk = LS("hz-l-" + id) || {yo: false};
+  const antes = conteo[id] || 0;
+  lk.yo = !lk.yo;
+  LS("hz-l-" + id, lk);                                   // este dispositivo recuerda si ya dio like
+  conteo[id] = Math.max(0, antes + (lk.yo ? 1 : -1));     // se ve al instante
+  pintarLikes();
+
+  const n = await likesDB.poner(id, lk.yo ? 1 : -1);
+  if (n !== null) {
+    conteo[id] = n;                                       // número real del servidor
+  } else {
+    lk.yo = !lk.yo; LS("hz-l-" + id, lk); conteo[id] = antes;   // falló: deshace
+  }
+  pintarLikes();
+};
+
+likesDB.todos().then(c => { conteo = c || {}; pintarLikes(); });
 
 /* Comentarios flotantes */
 const openC = () => { scr.classList.add("open"); setTimeout(() => $("#ct").focus(), 350); };
